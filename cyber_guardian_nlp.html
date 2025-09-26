@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cyber Guardian NLP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            padding: 30px;
+        }
+        h1 {
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            height: 120px;
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 14px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Cyber Guardian - Scam Text Analyzer</h1>
+    <p>Paste any suspicious message below. This tool will analyze it using Google's Natural Language API.</p>
+    
+    <textarea id="userInput" placeholder="Paste scam message here..."></textarea>
+    <br>
+    <button onclick="analyzeText()">Analyze</button>
+    
+    <div id="result"></div>
+    
+    <script>
+        async function analyzeText() {
+            const text = document.getElementById("userInput").value;
+            const apiKey = "AIzaSyDExEGZKNhSUXrUaecMHKApyf6mItiQ8Sc";
+            const url = `https://language.googleapis.com/v1/documents:analyzeEntities?key=${apiKey}`;
+            
+            const requestBody = {
+                document: {
+                    type: "PLAIN_TEXT",
+                    content: text
+                },
+                encodingType: "UTF8"
+            };
+            
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                const data = await response.json();
+                document.getElementById("result").innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+            } catch (error) {
+                document.getElementById("result").innerText = "Error: " + error;
+            }
+        }
+    </script>
+</body>
+</html>
